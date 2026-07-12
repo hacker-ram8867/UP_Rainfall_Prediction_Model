@@ -1,0 +1,55 @@
+# ==========================================
+# UP Rainfall Prediction Project
+# ==========================================
+
+# Large datasets
+*.csv
+*.xlsx
+*.xls
+*.parquet
+
+# Large models
+*.pkl
+*.joblib
+*.h5
+*.keras
+*.onnx
+
+# Generated outputs
+outputs/
+reports/
+models/
+logs/
+data/
+uploads/
+temp/
+
+# Dashboard generated files
+Dashboard/outputs/
+Dashboard/reports/
+Dashboard/uploads/
+Dashboard/logs/
+Dashboard/models/
+Dashboard/Models/
+Dashboard/data/
+
+# Generated HTML reports
+*.html
+
+# Streamlit cache
+.streamlit/
+
+# Images generated during analysis
+*.png
+*.jpg
+*.jpeg
+
+# XAI outputs
+xai/
+
+# Ignore generated notebooks
+.ipynb_checkpoints/
+
+# Ignore OS files
+Thumbs.db
+.DS_Store

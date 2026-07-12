@@ -4,26 +4,65 @@ import os
 import warnings
 import random
 import webbrowser
-import joblib
-import numpy as np
-import pandas as pd
-import polars as pl
-import plotly.express as px
-import matplotlib.pyplot as plt
-import shap
+
 import streamlit as st
-import streamlit.components.v1 as components
-from cerberus import Validator
-from pydantic import BaseModel,Field
-from lime.lime_tabular import LimeTabularExplainer
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_absolute_error,mean_squared_error,r2_score
-from scipy.stats import ks_2samp
+
 warnings.filterwarnings("ignore")
-ROOT=Path(__file__).resolve().parent.parent
-if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
+def optional_import(module_name, alias=None):
+    try:
+        module = __import__(module_name, fromlist=["*"])
+        return module
+    except ModuleNotFoundError:
+        st.error(
+            f"Required package '{module_name}' is not installed.\n"
+            f"Please add it to requirements.txt and redeploy."
+        )
+        st.stop()
+
+
+# Required Packages
+joblib = optional_import("joblib")
+np = optional_import("numpy")
+pd = optional_import("pandas")
+pl = optional_import("polars")
+px = optional_import("plotly.express")
+plt = optional_import("matplotlib.pyplot")
+shap = optional_import("shap")
+
+Validator = optional_import("cerberus").Validator
+
+pydantic = optional_import("pydantic")
+BaseModel = pydantic.BaseModel
+Field = pydantic.Field
+
+LimeTabularExplainer = optional_import(
+    "lime.lime_tabular"
+).LimeTabularExplainer
+
+sk_model_selection = optional_import("sklearn.model_selection")
+train_test_split = sk_model_selection.train_test_split
+
+sk_preprocessing = optional_import("sklearn.preprocessing")
+LabelEncoder = sk_preprocessing.LabelEncoder
+
+sk_ensemble = optional_import("sklearn.ensemble")
+RandomForestRegressor = sk_ensemble.RandomForestRegressor
+
+sk_metrics = optional_import("sklearn.metrics")
+mean_absolute_error = sk_metrics.mean_absolute_error
+mean_squared_error = sk_metrics.mean_squared_error
+r2_score = sk_metrics.r2_score
+
+ks_2samp = optional_import("scipy.stats").ks_2samp
+
+import streamlit.components.v1 as components
 st.set_page_config(page_title="🌧️ UP Rainfall Prediction System",page_icon="🌧️",layout="wide",initial_sidebar_state="expanded")
 BASE_DIR=ROOT
 DATA_DIR=BASE_DIR/"data"

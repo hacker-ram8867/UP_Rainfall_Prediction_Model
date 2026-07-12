@@ -1,36 +1,44 @@
 from pathlib import Path
 import sys
+
 import streamlit as st
 import pandas as pd
 
+# ---------------------------------------------------------------------
+# Project Root
+# ---------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parent.parent
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import truerize
-
+# ---------------------------------------------------------------------
+# Streamlit Config
+# ---------------------------------------------------------------------
 st.set_page_config(
     page_title="TRUERIZE Dashboard",
     page_icon="🌧️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
+# ---------------------------------------------------------------------
+# Directories
+# ---------------------------------------------------------------------
 BASE_DIR = Path(__file__).parent
 
 LOGO = BASE_DIR / "assets" / "logo.png"
 
-REPORT_DIR = BASE_DIR.parent / "reports"
-OUTPUT_DIR = BASE_DIR.parent / "outputs"
-MODEL_DIR = BASE_DIR.parent / "models"
-DATA_DIR = BASE_DIR.parent / "data"
-UPLOAD_DIR = BASE_DIR.parent / "uploads"
-XAI_DIR = BASE_DIR.parent / "xai"
-TEMP_DIR = BASE_DIR.parent / "temp"
-LOG_DIR = BASE_DIR.parent / "logs"
+REPORT_DIR = ROOT / "reports"
+OUTPUT_DIR = ROOT / "outputs"
+MODEL_DIR = ROOT / "models"
+DATA_DIR = ROOT / "data"
+UPLOAD_DIR = ROOT / "uploads"
+XAI_DIR = ROOT / "xai"
+TEMP_DIR = ROOT / "temp"
+LOG_DIR = ROOT / "logs"
 
-for folder in [
+for folder in (
     REPORT_DIR,
     OUTPUT_DIR,
     MODEL_DIR,
@@ -39,40 +47,35 @@ for folder in [
     XAI_DIR,
     TEMP_DIR,
     LOG_DIR,
-]:
+):
     folder.mkdir(parents=True, exist_ok=True)
 
-if "raw_df" not in st.session_state:
-    st.session_state.raw_df = None
+# ---------------------------------------------------------------------
+# Session State
+# ---------------------------------------------------------------------
+defaults = {
+    "raw_df": None,
+    "clean_df": None,
+    "model": None,
+    "prediction": None,
+    "shap_values": None,
+    "lime_exp": None,
+    "drift_results": None,
+    "metrics": None,
+    "feature_importance": None,
+}
 
-if "clean_df" not in st.session_state:
-    st.session_state.clean_df = None
+for key, value in defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = value
 
-if "model" not in st.session_state:
-    st.session_state.model = None
-
-if "prediction" not in st.session_state:
-    st.session_state.prediction = None
-
-if "shap_values" not in st.session_state:
-    st.session_state.shap_values = None
-
-if "lime_exp" not in st.session_state:
-    st.session_state.lime_exp = None
-
-if "drift_results" not in st.session_state:
-    st.session_state.drift_results = None
-
-if "metrics" not in st.session_state:
-    st.session_state.metrics = None
-
-if "feature_importance" not in st.session_state:
-    st.session_state.feature_importance = None
-
+# ---------------------------------------------------------------------
+# Sidebar
+# ---------------------------------------------------------------------
 with st.sidebar:
 
     if LOGO.exists():
-        st.image(str(LOGO), use_container_width=True)
+        st.image(LOGO, use_container_width=True)
 
     st.title("🌧️ TRUERIZE")
     st.caption("End-to-End Machine Learning Dashboard")
@@ -101,8 +104,11 @@ with st.sidebar:
     st.divider()
 
     st.success("✅ Pipeline Ready")
-    st.info("Use the navigation panel to execute every module.")
+    st.info("Use the navigation panel to execute each module.")
 
+# ---------------------------------------------------------------------
+# Header
+# ---------------------------------------------------------------------
 left, right = st.columns([3, 1])
 
 with left:
@@ -111,10 +117,13 @@ with left:
 
 with right:
     if LOGO.exists():
-        st.image(str(LOGO), use_container_width=True)
+        st.image(LOGO, use_container_width=True)
 
 st.divider()
 
+# ---------------------------------------------------------------------
+# Overview
+# ---------------------------------------------------------------------
 st.header("Dashboard Overview")
 
 c1, c2, c3, c4 = st.columns(4)
@@ -130,15 +139,15 @@ st.success("Welcome to TRUERIZE Dashboard")
 
 pipeline = pd.DataFrame(
     {
-        "Stage": [1,2,3,4,5,6,7],
+        "Stage": [1, 2, 3, 4, 5, 6, 7],
         "Module": [
-            "Polars",
-            "Validation",
-            "Preprocessing",
-            "Statistics",
-            "Drift",
-            "Training",
+            "Polars Configuration",
+            "Data Validation",
+            "Data Preprocessing",
+            "Statistics & Drift",
+            "Model Training",
             "Explainable AI",
+            "Report Viewer",
         ],
         "Status": ["Ready"] * 7,
     }

@@ -15,11 +15,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
-def optional_import(module_name, alias=None):
+def optional_import(module_name):
     try:
         module = __import__(module_name, fromlist=["*"])
         return module
-    except ModuleNotFoundError:
+    except (ModuleNotFoundError, ImportError):
         st.error(
             f"Required package '{module_name}' is not installed.\n"
             f"Please add it to requirements.txt and redeploy."
@@ -46,19 +46,14 @@ LimeTabularExplainer = optional_import(
     "lime.lime_tabular"
 ).LimeTabularExplainer
 
-sk_model_selection = optional_import("sklearn.model_selection")
-train_test_split = sk_model_selection.train_test_split
-
-sk_preprocessing = optional_import("sklearn.preprocessing")
-LabelEncoder = sk_preprocessing.LabelEncoder
-
-sk_ensemble = optional_import("sklearn.ensemble")
-RandomForestRegressor = sk_ensemble.RandomForestRegressor
-
-sk_metrics = optional_import("sklearn.metrics")
-mean_absolute_error = sk_metrics.mean_absolute_error
-mean_squared_error = sk_metrics.mean_squared_error
-r2_score = sk_metrics.r2_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score,
+)
 
 ks_2samp = optional_import("scipy.stats").ks_2samp
 

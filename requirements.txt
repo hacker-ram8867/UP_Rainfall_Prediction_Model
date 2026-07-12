@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+polars
+plotly
+matplotlib
+scikit-learn
+scipy
+joblib
+shap
+lime
+cerberus
+pydantic
+openpyxl
